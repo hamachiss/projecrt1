@@ -11,7 +11,7 @@
    <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ed80d364276d64a28955c68a3cb58e52&libraries=clusterer"></script>
     
     <script>
-        const url = "https://api.odcloud.kr/api/15050093/v1/uddi:d19c8e21-4445-43fe-b2a6-865dff832e08?page=1&perPage=4500&serviceKey=pMHKerZVfH8NbygRAHu1w6kRQdxC3smoLLf57FXq5SnLg3JKNhww04fUpkNXZlLBCqjlETbNGuM3LRgSjYrFiw%3D%3D"
+        const url = "https://api.odcloud.kr/api/15050093/v1/uddi:d19c8e21-4445-43fe-b2a6-865dff832e08?page=2&perPage=4500&serviceKey=pMHKerZVfH8NbygRAHu1w6kRQdxC3smoLLf57FXq5SnLg3JKNhww04fUpkNXZlLBCqjlETbNGuM3LRgSjYrFiw%3D%3D"
 
         let mapContainer = document.getElementById('map'), // 지도를 표시할 div 
           mapOption = {
@@ -55,7 +55,10 @@
              });
              // 인포윈도우를 생성합니다
              let infowindow = new kakao.maps.InfoWindow({
-                 content : data[i]["주차장명"]
+                 content : data[i]["주차장명"] + "<br/>" 
+                 + data[i]["주차장도로명주소"] + "<br/>"
+                 + data[i]["연락처"]
+        
              });
 
          markers.push(marker);
