@@ -32,6 +32,15 @@
     font-family: Han Sans;
 }
 
+.container .header h1 img{
+    width: 45px;
+    height: 45px;
+    object-fit : cover;
+
+    border:none;
+    filter:invert();
+}
+
 .container .nav ul li{
     display: inline-block;
     margin: 0 10px;
