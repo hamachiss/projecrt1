@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Landing Page - Start Bootstrap Theme</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <!-- Bootstrap icons-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" type="text/css" />
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="css/styles.css" rel="stylesheet" />
+    </head>
+    <body style="height: 100%">
+        <!-- Navigation-->
+        <nav class="navbar navbar-light bg-light static-top">
+            <div class="container">
+                <a class="navbar-brand" href="#!">테스트 주차장 맵</a>
+                <div class="row">
+                    <div class="col">
+                        <input class="form-control form-control-lg" id="emailAddress" type="email" placeholder="주소를 입력해주세요" data-sb-validations="required,email" />
+                        <div class="invalid-feedback text-white" data-sb-feedback="emailAddress:required">Email Address is required.</div>
+                        <div class="invalid-feedback text-white" data-sb-feedback="emailAddress:email">Email Address Email is not valid.</div>
+                    </div>
+                    <div class="col-auto"><button class="btn btn-primary btn-lg disabled" id="submitButton" type="submit">검색</button></div>
+                </div>
+            </div>
+        </nav>
+        <!-- 지도를 표시할 div 입니다 -->
+        <div id="map" style="width:100%; height:93%;"></div>
+        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ed80d364276d64a28955c68a3cb58e52"></script>
+        
+        <script>
+            const url = "https://api.odcloud.kr/api/15050093/v1/uddi:d19c8e21-4445-43fe-b2a6-865dff832e08?page=1&perPage=10&serviceKey=pMHKerZVfH8NbygRAHu1w6kRQdxC3smoLLf57FXq5SnLg3JKNhww04fUpkNXZlLBCqjlETbNGuM3LRgSjYrFiw%3D%3D"
+        
+            let mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+            mapOption = { 
+                center: new kakao.maps.LatLng(36.839637, 127.183786), // 지도의 중심좌표
+                level: 8, // 지도의 확대 레벨
+                mapTypeId : kakao.maps.MapTypeId.ROADMAP // 지도종류
+            };
+
+        // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
+        let map = new kakao.maps.Map(mapContainer, mapOption);
+        let clusterer = new kakao.maps.MarkerClusterer({
+            map: map,
+            averageCenter: true,
+            minLevel: 10,
+        });
+                // 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
+      function makeOverListener(map, marker, infowindow) {
+          return function() {
+              infowindow.open(map, marker);
+         };
+      }
+
+      // 인포윈도우를 닫는 클로저를 만드는 함수입니다 
+      function makeOutListener(infowindow) {
+          return function() {
+              infowindow.close();
+          };
+      }
+      
+        fetch(url)
+        .then(res => res.json())
+        .then(myJson => {
+            let markers = [];
+            const data = myJson.data
+          for (let i=0; i<data.length; i++) {
+             // 지도에 마커를 생성하고 표시한다
+             let marker = new kakao.maps.Marker({
+                 position: new kakao.maps.LatLng(data[i]["위도"],data[i]["경도"]), // 마커의 좌표
+             });
+             // 인포윈도우를 생성합니다
+             let infowindow = new kakao.maps.InfoWindow({
+                 content : '<div style="width:100%; margin:10px 20px;">'+data[i]["주차장명"] +"<br/>" + data[i]["주차장도로명주소"] +"<br/>" + data[i]["연락처"]+"<br/>"+'</div>'
+             });
+
+         markers.push(marker);
+         kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, infowindow));
+          kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(infowindow)
+            );
+      }
+         clusterer.addMarkers(markers);   
+        });
+
+        </script>
+        
+    </body>
+</html>
